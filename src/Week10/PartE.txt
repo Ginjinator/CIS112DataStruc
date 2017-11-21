@@ -1,0 +1,1 @@
+As the hash value lowered, there became more and more duplicates. There ended up being five of the same number on the last run.
