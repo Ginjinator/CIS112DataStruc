@@ -1,4 +1,4 @@
-package Week04.Week12;
+package Week12;
 
 public class WeightedGraphHW {
 }
