@@ -13,7 +13,7 @@ public class WeightedGraphHW<T> implements WeightedGraphInterface<T>
     private int[][] edges;
     private boolean[] marks;  // marks[i] is mark for vertices[i]
 
-    public WeightedGraph()
+    public WeightedGraphHW()
     // Instantiates a graph with capacity DEFCAP vertices.
     {
         numVertices = 0;
@@ -36,13 +36,13 @@ public class WeightedGraphHW<T> implements WeightedGraphInterface<T>
     public boolean isEmpty()
     // Returns true if this graph is empty; otherwise, returns false.
     {
-        return true;
+        return numVertices == 0;
     }
 
     public boolean isFull()
     // Returns true if this graph is full; otherwise, returns false.
     {
-        return true;
+        return (numVertices == maxVertices);
     }
 
     public void addVertex(T vertex)
@@ -64,7 +64,12 @@ public class WeightedGraphHW<T> implements WeightedGraphInterface<T>
     public boolean hasVertex(T vertex)
     // Returns true if this graph contains vertex; otherwise, returns false.
     {
-        return true;
+        for (int i = 0; i < numVertices; i++) {
+            if(vertex.equals(vertices[i])){
+                return true;
+            }
+        }
+        return false;
     }
 
     private int indexIs(T vertex)
@@ -115,7 +120,7 @@ public class WeightedGraphHW<T> implements WeightedGraphInterface<T>
     public void clearMarks()
     // Unmarks all vertices.
     {
-        for (int i = 0; i < marks.length; i++) {
+        for (int i = 0; i < numVertices; i++) {
             marks[i] = false;
         }
     }
@@ -123,17 +128,23 @@ public class WeightedGraphHW<T> implements WeightedGraphInterface<T>
     public void markVertex(T vertex)
     // Marks vertex.
     {
+        marks[indexIs(vertex)] = true;
     }
 
     public boolean isMarked(T vertex)
     // Returns true if vertex is marked; otherwise, returns false.
     {
-        return true;
+        return marks[indexIs(vertex)];
     }
 
     public T getUnmarked()
     // Returns an unmarked vertex if any exist; otherwise, returns null.
     {
+        for (int i = 0; i < numVertices; i++) {
+            if(marks[i] == false){
+                return vertices[i];
+            }
+        }
         return null;
     }
 
