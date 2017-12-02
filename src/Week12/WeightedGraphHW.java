@@ -166,5 +166,4 @@ public class WeightedGraphHW<T> implements WeightedGraphInterface<T>
         edges[indexIs(vertex1)][indexIs(vertex2)] = NULL_EDGE;
         return existed;
     }
-
 }
