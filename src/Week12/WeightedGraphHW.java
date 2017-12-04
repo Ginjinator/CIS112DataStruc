@@ -1,7 +1,11 @@
 package Week12;
 
+import ch02.stacks.*;
 import ch04.queues.*;
+import ch09.priorityQueues.*;
 import ch10.graphs.*;
+import support.Flight;
+import java.util.PriorityQueue;
 
 public class WeightedGraphHW<T> implements WeightedGraphInterface<T>
 {
@@ -165,5 +169,50 @@ public class WeightedGraphHW<T> implements WeightedGraphInterface<T>
         boolean existed = edgeExists(vertex1, vertex2);
         edges[indexIs(vertex1)][indexIs(vertex2)] = NULL_EDGE;
         return existed;
+    }
+
+    public int minEdges(T vertex1, T vertex2){
+        Path<T> path;
+        Path<T> savePath;
+        int minEdge;
+        int newEdge;
+        int minDistance;
+        int newDistance;
+
+        PriQueueInterface<Path> pq = heapPriQ<Path>(20);
+        T vertex;
+        QueueInterface<T> vertexQueue = new LinkedQueue<>();
+
+        clearMarks();
+        savePath = new Path(vertex1, vertex2, 0, 0);
+        pq.enqueue(savePath);
+
+        //while the priq has things in it
+        while(!pq.isEmpty()){
+            path = pq.dequeue();
+            //if the path to the vertex is not marked
+            if(!isMarked(path.getToVertex())){
+                markVertex(path.getToVertex());
+                path.setFromVertex(path.getToVertex());
+                minDistance = path.getDistance();
+                minEdge = path.getNumEdges();
+                vertexQueue = getToVertices(path.getFromVertex());
+                while(!vertexQueue.isEmpty()){
+                    vertex = vertexQueue.dequeue();
+                    //if that vertex is not marked
+                    if(!isMarked(vertex)){
+                        newDistance = minDistance + weightIs(path.getFromVertex(),  vertex);
+                        newEdge = minEdge + 1;
+                        savePath = new Path(path.getFromVertex(), vertex, newDistance, newEdge);
+                        pq.enqueue(savePath);
+                        if(vertex.equals(vertex2)){
+                            return savePath.getNumEdges();
+                        }
+                    }
+                }
+
+            }
+        }
+        return -1;
     }
 }
