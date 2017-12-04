@@ -35,5 +35,8 @@ public class GraphDriver {
     graph.addEdge(s6, s0, 600);
     //graph.addEdge(s6, s3, 1300);
 
+    //Question 20 p.615
     System.out.println(graph.connects(s6, s3));
+    //Question 42 p.618
+    System.out.println(graph.minEdges(s1, s0));
 }

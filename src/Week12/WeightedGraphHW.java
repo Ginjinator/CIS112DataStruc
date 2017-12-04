@@ -152,6 +152,53 @@ public class WeightedGraphHW<T> implements WeightedGraphInterface<T>
         return null;
     }
 
+    // Returns true if a path exists on graph, from startVertex to endVertex;
+    // otherwise returns false. Uses breadth-first search algorithm.
+    private boolean isPathBF(T startVertex, T endVertex){
+        QueueInterface<T> queue = new LinkedQueue<>();
+        QueueInterface<T> vertexQueue = new LinkedQueue<>();
+
+        boolean found = false;
+        T currVertex;      // vertex being processed
+        T adjVertex;       // adjacent to currVertex
+
+        clearMarks();
+        markVertex(startVertex);
+        queue.enqueue(startVertex);
+
+        do {
+            currVertex = queue.dequeue();
+            System.out.println(currVertex);
+            if (currVertex.equals(endVertex))
+                found = true;
+            else {
+                vertexQueue = getToVertices(currVertex);
+                while (!vertexQueue.isEmpty()) {
+                    adjVertex = vertexQueue.dequeue();
+                    if (!isMarked(adjVertex)) {
+                        markVertex(adjVertex);
+                        queue.enqueue(adjVertex);
+                    }
+                }
+            }
+        } while (!queue.isEmpty() && !found);
+
+        return found;
+    }
+
+    //Question 20 p.615
+    public int connects(T a, T b){
+        int count = 0;
+        for (int i = 0; i < numVertices; i++) {
+            if ((!vertices[i].equals(a) || !vertices[i].equals(b) &&
+                    (isPathBF(vertices[i], a) && isPathBF(vertices[i], b)))) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    //Question 19 p.615
     public boolean edgeExists(T vertex1, T vertex2)
     // Preconditions:  vertex1 and vertex2 are in the set of vertices
     //
@@ -171,6 +218,7 @@ public class WeightedGraphHW<T> implements WeightedGraphInterface<T>
         return existed;
     }
 
+    //Question 42 p.618
     public int minEdges(T vertex1, T vertex2){
         Path<T> path;
         Path<T> savePath;
