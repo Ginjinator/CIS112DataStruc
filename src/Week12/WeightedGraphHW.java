@@ -1,7 +1,11 @@
 package Week12;
 
+import ch02.stacks.*;
 import ch04.queues.*;
+import ch09.priorityQueues.*;
 import ch10.graphs.*;
+import support.Flight;
+import java.util.PriorityQueue;
 
 public class WeightedGraphHW<T> implements WeightedGraphInterface<T>
 {
@@ -148,6 +152,53 @@ public class WeightedGraphHW<T> implements WeightedGraphInterface<T>
         return null;
     }
 
+    // Returns true if a path exists on graph, from startVertex to endVertex;
+    // otherwise returns false. Uses breadth-first search algorithm.
+    private boolean isPathBF(T startVertex, T endVertex){
+        QueueInterface<T> queue = new LinkedQueue<>();
+        QueueInterface<T> vertexQueue = new LinkedQueue<>();
+
+        boolean found = false;
+        T currVertex;      // vertex being processed
+        T adjVertex;       // adjacent to currVertex
+
+        clearMarks();
+        markVertex(startVertex);
+        queue.enqueue(startVertex);
+
+        do {
+            currVertex = queue.dequeue();
+            System.out.println(currVertex);
+            if (currVertex.equals(endVertex))
+                found = true;
+            else {
+                vertexQueue = getToVertices(currVertex);
+                while (!vertexQueue.isEmpty()) {
+                    adjVertex = vertexQueue.dequeue();
+                    if (!isMarked(adjVertex)) {
+                        markVertex(adjVertex);
+                        queue.enqueue(adjVertex);
+                    }
+                }
+            }
+        } while (!queue.isEmpty() && !found);
+
+        return found;
+    }
+
+    //Question 20 p.615
+    public int connects(T a, T b){
+        int count = 0;
+        for (int i = 0; i < numVertices; i++) {
+            if ((!vertices[i].equals(a) || !vertices[i].equals(b) &&
+                    (isPathBF(vertices[i], a) && isPathBF(vertices[i], b)))) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    //Question 19 p.615
     public boolean edgeExists(T vertex1, T vertex2)
     // Preconditions:  vertex1 and vertex2 are in the set of vertices
     //
@@ -167,4 +218,49 @@ public class WeightedGraphHW<T> implements WeightedGraphInterface<T>
         return existed;
     }
 
+    //Question 42 p.618
+    public int minEdges(T vertex1, T vertex2){
+        Path<T> path;
+        Path<T> savePath;
+        int minEdge;
+        int newEdge;
+        int minDistance;
+        int newDistance;
+
+        PriQueueInterface<Path> pq = heapPriQ<Path>(20);
+        T vertex;
+        QueueInterface<T> vertexQueue = new LinkedQueue<>();
+
+        clearMarks();
+        savePath = new Path(vertex1, vertex2, 0, 0);
+        pq.enqueue(savePath);
+
+        //while the priq has things in it
+        while(!pq.isEmpty()){
+            path = pq.dequeue();
+            //if the path to the vertex is not marked
+            if(!isMarked(path.getToVertex())){
+                markVertex(path.getToVertex());
+                path.setFromVertex(path.getToVertex());
+                minDistance = path.getDistance();
+                minEdge = path.getNumEdges();
+                vertexQueue = getToVertices(path.getFromVertex());
+                while(!vertexQueue.isEmpty()){
+                    vertex = vertexQueue.dequeue();
+                    //if that vertex is not marked
+                    if(!isMarked(vertex)){
+                        newDistance = minDistance + weightIs(path.getFromVertex(),  vertex);
+                        newEdge = minEdge + 1;
+                        savePath = new Path(path.getFromVertex(), vertex, newDistance, newEdge);
+                        pq.enqueue(savePath);
+                        if(vertex.equals(vertex2)){
+                            return savePath.getNumEdges();
+                        }
+                    }
+                }
+
+            }
+        }
+        return -1;
+    }
 }
