@@ -227,7 +227,7 @@ public class WeightedGraphHW<T> implements WeightedGraphInterface<T>
         int minDistance;
         int newDistance;
 
-        PriQueueInterface<Path> pq = heapPriQ<Path>(20);
+        PriQueueInterface<Path> pq = new HeapPriQ<Path>(20);
         T vertex;
         QueueInterface<T> vertexQueue = new LinkedQueue<>();
 
