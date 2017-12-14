@@ -1,26 +1,20 @@
 package Week14;
 
+//----------------------------------------------------------------------------
+// Sorts.java               by Dale/Joyce/Weems                     Chapter 11
+//
+// Test harness used to run sorting algorithms.
+//----------------------------------------------------------------------------
+
+import java.util.*;
 import java.text.DecimalFormat;
-import java.util.Random;
 
-/*
-fix numSwaps
-possibly fix nemCompares
-Program 1 on page 667
-Program 10 on page 668
-*/
+public class SortsHW{
 
-public class SortsHW {
-    //----------------------------------------------------------------------------
-    // Sorts.java               by Dale/Joyce/Weems                     Chapter 11
-    //
-    // Test harness used to run sorting algorithms.
-    //----------------------------------------------------------------------------
-
-    static final int SIZE = 20;            // size of array to be sorted
+    static final int SIZE = 50;            // size of array to be sorted
     static int[] values = new int[SIZE];   // values to be sorted
-    static int numSwaps;
-    static int numCompares;
+    static int swaps = 0;
+    static int comparisons = 0;
 
     static void initValues()
     // Initializes the values array with random integers from 0 to 99.
@@ -47,7 +41,7 @@ public class SortsHW {
         int temp = values[index1];
         values[index1] = values[index2];
         values[index2] = temp;
-        numSwaps++;
+        swaps++;
     }
 
     static public void printValues()
@@ -80,9 +74,8 @@ public class SortsHW {
         for (int index = startIndex + 1; index <= endIndex; index++) {
             if (values[index] < values[indexOfMin]) {
                 indexOfMin = index;
-                numSwaps++;
             }
-            numCompares++;
+            comparisons++;
         }
         return indexOfMin;
     }
@@ -91,9 +84,8 @@ public class SortsHW {
     // Sorts the values array using the selection sort algorithm.
     {
         int endIndex = SIZE - 1;
-        for (int current = 0; current < endIndex; current++) {
+        for (int current = 0; current < endIndex; current++)
             swap(current, minIndex(current, endIndex));
-        }
     }
 
 
@@ -106,9 +98,12 @@ public class SortsHW {
     // between values[startIndex]..values[endIndex]
     // beginning at values[endIndex].
     {
-        for (int index = endIndex; index > startIndex; index--)
-            if (values[index] < values[index - 1])
+        for (int index = endIndex; index > startIndex; index--) {
+            comparisons++;
+            if (values[index] < values[index - 1]) {
                 swap(index, index - 1);
+            }
+        }
     }
 
     static void bubbleSort()
@@ -119,7 +114,6 @@ public class SortsHW {
         while (current < (SIZE - 1))
         {
             bubbleUp(current, SIZE - 1);
-            numCompares++;
             current++;
         }
     }
@@ -137,12 +131,13 @@ public class SortsHW {
     // Returns false if a swap was made; otherwise, returns true.
     {
         boolean sorted = true;
-        for (int index = endIndex; index > startIndex; index--)
-            if (values[index] < values[index - 1])
-            {
+        for (int index = endIndex; index > startIndex; index--) {
+            comparisons++;
+            if (values[index] < values[index - 1]) {
                 swap(index, index - 1);
                 sorted = false;
             }
+        }
         return sorted;
     }
 
@@ -155,7 +150,6 @@ public class SortsHW {
         while ((current < (SIZE - 1)) && !sorted)
         {
             sorted = bubbleUp2(current, SIZE - 1);
-            numCompares++;
             current++;
         }
     }
@@ -173,6 +167,7 @@ public class SortsHW {
         boolean moreToSearch = true;
         while (moreToSearch && !finished)
         {
+            comparisons++;
             if (values[current] < values[current - 1])
             {
                 swap(current, current - 1);
@@ -187,10 +182,8 @@ public class SortsHW {
     static void insertionSort()
     // Sorts the values array using the insertion sort algorithm.
     {
-        for (int count = 1; count < SIZE; count++) {
+        for (int count = 1; count < SIZE; count++)
             insertItem(0, count);
-            numCompares++;
-        }
     }
 
 
@@ -402,25 +395,34 @@ public class SortsHW {
     public static void main(String[] args)
     {
         initValues();
-        printValues();
-        System.out.println("values is sorted: " + isSorted());
         System.out.println();
+        selectionSort();
+        System.out.println("selectionSort()  Swaps: " + swaps + "   Comparisons: " + comparisons);
+        swaps = 0;
+        comparisons = 0;
 
-        // make call to sorting method here (just remove //)
-         selectionSort();
-        // bubbleSort();
-        // shortBubble();
-        // insertionSort();
+        initValues();
+        System.out.println();
+        bubbleSort();
+        System.out.println("bubbleSort()     Swaps: " + swaps + "   Comparisons: " + comparisons);
+        swaps = 0;
+        comparisons = 0;
+
+        initValues();
+        System.out.println();
+        shortBubble();
+        System.out.println("shortBubble()    Swaps: " + swaps + "   Comparisons: " + comparisons);
+        swaps = 0;
+        comparisons = 0;
+
+        initValues();
+        System.out.println();
+        insertionSort();
+        System.out.println("insertionSort()  Swaps: " + swaps + "   Comparisons: " + comparisons);
+
+
         // mergeSort(0, SIZE - 1);
         // quickSort(0, SIZE - 1);
         // heapSort();
-
-        printValues();
-        System.out.println("values is sorted: " + isSorted());
-        System.out.println("selectionSort     swaps: " + numSwaps + "   compares: " + numCompares);
-        //System.out.println("bubbleSort        swaps: " + numSwaps + "   compares: " + numCompares);
-        //System.out.println("shortBubbleSort   swaps: " + numSwaps + "   compares: " + numCompares);
-        //System.out.println("insertionSort     swaps: " + numSwaps + "   compares: " + numCompares);
-        System.out.println();
     }
 }
